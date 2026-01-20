@@ -3,6 +3,7 @@ import { blogData } from "../assets/assets";
 import { useEffect } from "react";
 import { useState } from "react";
 import axios, { all } from "axios";
+import API_BASE_URL from "../config/api";
 
 export const StoreContext = createContext(null);
 
@@ -21,7 +22,7 @@ const StoreContextProvider = ({ children }) => {
     useEffect(() => {
         const allblogs = async () => {
             try {
-                const res = await axios.get("http://localhost:4000/blog/all");
+                const res = await axios.get(`${API_BASE_URL}/blog/all`);
                 // console.log(res.data);
                 // if(res.data.success) {
                 //     setBlogData(res.data.blogs);

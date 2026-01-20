@@ -13,7 +13,14 @@ export const allBlogs = async (req, res) => {
 export const createBlog = async (req, res) => {
   try {
     const { title, category, description } = req.body;
-    const image_filename = `${req.file.filename}`;
+
+    // ✅ safety check
+    if (!req.file) {
+      return res.status(400).json({ message: "Image is required" });
+    }
+
+    const image_filename = req.file.filename;
+
     const blog = await Blog.create({
       title,
       category,
@@ -25,41 +32,62 @@ export const createBlog = async (req, res) => {
         image: req.user.image,
       },
     });
-    return res
-      .status(201)
-      .json({ message: "blog created", success: true, blog });
+
+    return res.status(201).json({
+      message: "Blog created",
+      success: true,
+      blog,
+    });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 export const deleteBlog = async (req, res) => {
-  const blog = await Blog.findById(req.params.id);
-  fs.unlink(`uploads/${blog.image}`, () => {});
-  if (!blog) {
-    return res.status(404).json({ message: "blog not found", success: false });
+  try {
+    const blog = await Blog.findById(req.params.id);
+
+    // ✅ check first
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found", success: false });
+    }
+
+    if (blog.author.id.toString() !== req.user._id.toString()) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized", success: false });
+    }
+
+    // ✅ safe image delete
+    const imagePath = `uploads/${blog.image}`;
+    if (blog.image && fs.existsSync(imagePath)) {
+      fs.unlinkSync(imagePath);
+    }
+
+    await blog.deleteOne();
+
+    return res.status(200).json({
+      message: "Blog deleted successfully",
+      success: true,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
   }
-  if (blog.author.id.toString() !== req.user.id.toString()) {
-    return res
-      .status(403)
-      .json({ message: "Not authorized to delete this blog", success: false });
-  }
-  await blog.deleteOne();
-  return res
-    .status(404)
-    .json({ message: "blog deleted successfully", success: true });
 };
 
 export const singleBlog = async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
-    return res
-      .status(200)
-      .json({ message: "blog  found", success: true, blog });
+    return res.status(200).json({
+      message: "Blog found",
+      success: true,
+      blog,
+    });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "internal server error", success: false });
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
   }
 };
 
@@ -70,8 +98,9 @@ export const userBlogs = async (req, res) => {
     });
     res.status(200).json(blogs);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "internal server error", success: false });
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
   }
 };

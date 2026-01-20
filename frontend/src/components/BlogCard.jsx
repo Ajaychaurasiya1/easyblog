@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+const API_BASE_URL = "https://velthrix-blog-backend.onrender.com"; // Adjust the base URL as needed
 const BlogCard = ({
   id,
   title,
@@ -12,7 +13,7 @@ const BlogCard = ({
     <div className="border border-gray-300 shadow-md p-3 rounded-md">
       <Link to={`/blog/${id}`}>
         <img
-          src={`http://localhost:4000/images/${image}`}
+          src={`${API_BASE_URL}/images/${image}`}
           alt=""
           className="flex items-center justify-center w-full mx-auto cursor-pointer transform duration-300 hover:scale-105"
         />
@@ -22,7 +23,7 @@ const BlogCard = ({
       <div className="flex gap-3 items-center my-3">
         <img
           className="w-8 h-8 rounded-full"
-          src={`http://localhost:4000/images/${author_image}`}
+          src={`${API_BASE_URL}/images/${author_image}`}
           alt=""
         />
         <p className="text-lg font-bold text-gray-600">{author_name}</p>

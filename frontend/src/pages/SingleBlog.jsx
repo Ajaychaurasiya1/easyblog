@@ -18,7 +18,7 @@ const SingleBlog = () => {
     <div className="rounded-md border border-gray-200 p-5 max-w-3xl flex flex-col gap-3 items-center justify-center mx-auto py-8">
       <img
         className="transition-transform duration-300 hover:scale-105"
-        src={`http://localhost:4000/images/${blog.image}`}
+        src={`VITE_API_URL/images/${blog.image}`}
         alt=""
       />
       <p className="text-2xl font-bold">{blog.title}</p>
@@ -28,7 +28,7 @@ const SingleBlog = () => {
         <p className="text-lg font-bold">Author:{blog.author.name}</p>
         <img
           className="w-8 h-8 rounded-full"
-          src={`http://localhost:4000/images/${blog.author.image}`}
+          src={`VITE_API_URL/images/${blog.author.image}`}
           alt=""
         />
       </div>

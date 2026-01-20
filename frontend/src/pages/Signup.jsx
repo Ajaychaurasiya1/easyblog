@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from 'react-toastify';
+import API_BASE_URL from "../config/api";
 
 const Signup = () => {
 
@@ -36,7 +37,7 @@ const submitHandler = async(e) => {
     data.append("password", formData.password);
     data.append("image", formData.image);
     const res = await axios.post(
-      "http://localhost:4000/user/register",
+      `${API_BASE_URL}/user/register`,
       data,
       {
         header: {
