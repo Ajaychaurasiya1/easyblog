@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-const API_BASE_URL = "https://velthrix-blog-backend.onrender.com"; // Adjust the base URL as needed
+import API_BASE_URL from "../config/api";
 const BlogCard = ({
   id,
   title,
