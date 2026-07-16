@@ -1,49 +1,41 @@
-import React from 'react'
-import axios from "axios";
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useContext } from 'react';
-import { StoreContext } from '../context/StoreContext';
-import API_BASE_URL from '../config/api';
-
+import { AuthContext } from "../context/AuthContext";
+import { loginUser as loginApi } from "../api/auth";
 
 const Login = () => {
-
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  const {loginUser} = useContext(StoreContext);
-  const token = localStorage.getItem("token");
-
-  const onChangeHandler = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value});
-  };
-
+  const { loginUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const submitHandler = async(e) => {
+  const onChangeHandler = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const submitHandler = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.post(`${API_BASE_URL}/user/login`, formData, {
-        headers: {
-          "content-Type": "application/json",
-        },
-      });
-      if(res.data.success) {
-        const {user, token} = res.data;
+      const res = await loginApi(formData);
+      if (res.data.success) {
+        const { user, token } = res.data;
         loginUser(user, token);
         toast.success(res.data.message);
         navigate("/");
       }
     } catch (error) {
-      toast.error(error.message);
-    }
-    finally{
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Login failed. Please try again.";
+      toast.error(message);
+    } finally {
       setLoading(false);
     }
   };
@@ -54,35 +46,46 @@ const Login = () => {
         <h1 className=" text-lg font-bold text-center text-gray-700">
           Login into your account!
         </h1>
-        <form onSubmit={submitHandler} action="" className=" flex flex-col gap-5 mt-5 w-full">
-          
+        <form
+          onSubmit={submitHandler}
+          action=""
+          className=" flex flex-col gap-5 mt-5 w-full"
+        >
           <input
-          name='email'
-          value={formData.email}
-          onChange={onChangeHandler}
+            name="email"
+            value={formData.email}
+            onChange={onChangeHandler}
             type="email"
             placeholder="Enter your email"
             required
             className=" w-full p-2 border border-gray-300 rounded outline-none"
           />
           <input
-          name='password'
-          value={formData.password}
-          onChange={onChangeHandler}
+            name="password"
+            value={formData.password}
+            onChange={onChangeHandler}
             type="password"
-            placeholder="Enter your password" 
+            placeholder="Enter your password"
             required
             className=" w-full p-2 border border-gray-300 rounded outline-none"
           />
-          
-          <button className=" bg-orange-600 text-white px-6 py-2 w-full cursor-pointer">Signin</button>
+
+          <button
+            disabled={loading}
+            className=" bg-orange-600 text-white px-6 py-2 w-full cursor-pointer disabled:opacity-60"
+          >
+            {loading ? "Signing in..." : "Signin"}
+          </button>
         </form>
         <p className=" text-center mt-4">
-          Don't have an account? <Link to={"/register"} className=" text-orange-600 cursor-pointer">Register Here</Link>{" "}
+          Don't have an account?{" "}
+          <Link to={"/register"} className=" text-orange-600 cursor-pointer">
+            Register Here
+          </Link>{" "}
         </p>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

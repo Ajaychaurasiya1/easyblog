@@ -4,14 +4,31 @@ import jwt from "jsonwebtoken";
 
 export const register = async (req, res) => {
   try {
-    let image_filename = `${req.file.filename}`;
     const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        message: "Name, email, and password are required",
+        success: false,
+      });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({
+        message: "Profile image is required",
+        success: false,
+      });
+    }
+
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res
-        .status(400)
-        .json({ message: "User already exists", success: false });
+      return res.status(400).json({
+        message: "User already exists. Please login instead.",
+        success: false,
+      });
     }
+
+    const image_filename = req.file.filename;
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
       name,
@@ -23,6 +40,7 @@ export const register = async (req, res) => {
       .status(201)
       .json({ message: "User created successfully", success: true, user });
   } catch (error) {
+    console.error("Register error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

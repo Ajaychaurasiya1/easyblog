@@ -1,8 +1,8 @@
 import { useContext } from "react";
 import BlogCard from "./BlogCard";
-import { StoreContext } from "../context/StoreContext";
+import { BlogContext } from "../context/BlogContext";
 const LatestBlogs = () => {
-  const { blogData } = useContext(StoreContext);
+  const { blogData } = useContext(BlogContext);
   return (
     <div>
       <h1 className="text-3xl my-3 text-gray-700 font-bold text-center sm:text-start">

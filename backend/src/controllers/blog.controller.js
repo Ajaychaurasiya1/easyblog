@@ -1,5 +1,11 @@
 import Blog from "../models/blog.model.js";
 import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const uploadsDir = path.join(__dirname, "../../uploads");
 
 export const allBlogs = async (req, res) => {
   try {
@@ -14,9 +20,8 @@ export const createBlog = async (req, res) => {
   try {
     const { title, category, description } = req.body;
 
-    // ✅ safety check
     if (!req.file) {
-      return res.status(400).json({ message: "Image is required" });
+      return res.status(400).json({ message: "Image is required", success: false });
     }
 
     const image_filename = req.file.filename;
@@ -47,7 +52,6 @@ export const deleteBlog = async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
 
-    // ✅ check first
     if (!blog) {
       return res.status(404).json({ message: "Blog not found", success: false });
     }
@@ -58,8 +62,7 @@ export const deleteBlog = async (req, res) => {
         .json({ message: "Not authorized", success: false });
     }
 
-    // ✅ safe image delete
-    const imagePath = `uploads/${blog.image}`;
+    const imagePath = path.join(uploadsDir, blog.image || "");
     if (blog.image && fs.existsSync(imagePath)) {
       fs.unlinkSync(imagePath);
     }

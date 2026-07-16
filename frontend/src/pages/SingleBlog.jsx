@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { StoreContext } from "../context/StoreContext";
+import { BlogContext } from "../context/BlogContext";
 import BlogCard from "../components/BlogCard";
-import API_BASE_URL from "../config/api";
+import { getImageUrl } from "../config/api";
 
 const formatDate = (date) =>
   new Date(date).toLocaleDateString("en-US", {
@@ -56,7 +56,7 @@ const splitContent = (description = "") => {
 
 const SingleBlog = () => {
   const { id } = useParams();
-  const { blogData } = useContext(StoreContext);
+  const { blogData } = useContext(BlogContext);
   const [readProgress, setReadProgress] = useState(0);
   const [copied, setCopied] = useState(false);
 
@@ -178,7 +178,7 @@ const SingleBlog = () => {
                 <div className="flex items-center gap-3">
                   <img
                     className="w-10 h-10 rounded-full object-cover border border-gray-200"
-                    src={`${API_BASE_URL}/images/${blog.author.image}`}
+                    src={getImageUrl(blog.author.image)}
                     alt={blog.author.name}
                   />
                   <div>
@@ -223,7 +223,7 @@ const SingleBlog = () => {
             <div className="mb-10 overflow-hidden rounded-xl border border-gray-200 shadow-sm">
               <img
                 className="w-full max-h-[480px] object-cover"
-                src={`${API_BASE_URL}/images/${blog.image}`}
+                src={getImageUrl(blog.image)}
                 alt={blog.title}
               />
               <p className="text-xs text-gray-400 px-4 py-2 bg-gray-50 border-t border-gray-100">
@@ -323,7 +323,7 @@ const SingleBlog = () => {
               <div className="flex items-start gap-4">
                 <img
                   className="w-16 h-16 rounded-full object-cover border border-gray-200 shrink-0"
-                  src={`${API_BASE_URL}/images/${blog.author.image}`}
+                  src={getImageUrl(blog.author.image)}
                   alt={blog.author.name}
                 />
                 <div>

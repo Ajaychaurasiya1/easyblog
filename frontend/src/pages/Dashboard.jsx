@@ -1,11 +1,12 @@
-import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import API_BASE_URL from "../config/api";
+import { getImageUrl } from "../config/api";
+import { createBlog, deleteBlog, getAllBlogs } from "../api/blogs";
+import { BlogContext } from "../context/BlogContext";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("list");
-  const token = localStorage.getItem("token");
+  const { refreshBlogs } = useContext(BlogContext);
   const [formData, setFormData] = useState({
     title: "",
     category: "",
@@ -13,80 +14,84 @@ const Dashboard = () => {
     image: null,
   });
   const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const onChangeHandler = (e) => {
-    console.log(e.target.value);
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
   const fileHandler = (e) => {
     setFormData({ ...formData, image: e.target.files[0] });
   };
 
+  const loadBlogs = async () => {
+    try {
+      const res = await getAllBlogs();
+      setBlogs(res.data.blogs || []);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    if (!formData.image) {
+      toast.error("Please select an image");
+      return;
+    }
 
     const data = new FormData();
     data.append("title", formData.title);
     data.append("category", formData.category);
     data.append("description", formData.description);
     data.append("image", formData.image);
+
     try {
-      const res = await axios.post(
-        `${API_BASE_URL}/blog/create`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log("res", res);
+      setLoading(true);
+      const res = await createBlog(data);
       toast.success(res.data.message);
-      (formData.title = ""),
-        (formData.category = ""),
-        (formData.description = ""),
-        (formData.image = null);
+      setFormData({
+        title: "",
+        category: "",
+        description: "",
+        image: null,
+      });
+      await loadBlogs();
+      await refreshBlogs();
+      setActiveTab("list");
     } catch (error) {
-      toast.error(error.message);
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to create blog";
+      toast.error(message);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    const allBlogs = async () => {
-      try {
-        const res = await axios.get(`${API_BASE_URL}/blog/all`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setBlogs(res.data.blogs);
-      } catch (error) {
-        console.log("error", error);
-      }
-    };
-    allBlogs();
+    loadBlogs();
   }, []);
 
   const removeBlog = async (blogId) => {
     try {
-      const res = await axios.delete(
-        `${API_BASE_URL}/blog/delete/${blogId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await deleteBlog(blogId);
       toast.success(res.data.message);
-      setBlogs(blogs.filter((blog) => blog._id !== blogId));
+      setBlogs((prev) => prev.filter((blog) => blog._id !== blogId));
+      await refreshBlogs();
     } catch (error) {
-      toast.error(error.response.data.message);
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to delete blog";
+      toast.error(message);
     }
   };
+
   return (
     <div className="flex h-auto">
-      {/* side bar */}
       <div className="w-64 border border-gray-300  text-white p-6">
         <h2 className="text-lg font-semibold mb-6 text-white">Dashboard</h2>
         <button
@@ -122,6 +127,7 @@ const Dashboard = () => {
                   onChange={onChangeHandler}
                   type="text"
                   placeholder="title"
+                  required
                   className="border border-gray-300 rounded-md p-2 outline-none w-full"
                 />
                 <input
@@ -130,14 +136,15 @@ const Dashboard = () => {
                   onChange={onChangeHandler}
                   type="text"
                   placeholder="category"
+                  required
                   className="border border-gray-300 rounded-md p-2 outline-none w-full"
                 />
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={onChangeHandler}
-                  type="text"
                   placeholder="description"
+                  required
                   className="border border-gray-300 rounded-md p-2 outline-none w-full"
                 />
 
@@ -147,11 +154,15 @@ const Dashboard = () => {
                     onChange={fileHandler}
                     type="file"
                     accept="image/*"
+                    required
                     className="border border-gray-300 rounded-md p-2 outline-none w-full"
                   />
                 </div>
-                <button className="bg-black text-white w-full rounded-full border-none cursor-pointer py-2">
-                  post blog
+                <button
+                  disabled={loading}
+                  className="bg-black text-white w-full rounded-full border-none cursor-pointer py-2 disabled:opacity-60"
+                >
+                  {loading ? "Posting..." : "post blog"}
                 </button>
               </form>
             </div>
@@ -176,7 +187,7 @@ const Dashboard = () => {
                       <td className="border px-4 py-2">{blog.category}</td>
                       <td className="border px-4 py-2">
                         <img
-                          src={`${API_BASE_URL}/images/${blog.image}`}
+                          src={getImageUrl(blog.image)}
                           alt={blog.title}
                           className="w-16 h-16 object-cover mx-auto"
                         />
@@ -198,4 +209,5 @@ const Dashboard = () => {
     </div>
   );
 };
+
 export default Dashboard;
