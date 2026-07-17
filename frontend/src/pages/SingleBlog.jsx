@@ -123,24 +123,24 @@ const SingleBlog = () => {
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-gray-100">
+      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-[var(--mist)]">
         <div
-          className="h-full bg-orange-500 transition-all duration-150"
+          className="h-full bg-[var(--ember)] transition-all duration-150"
           style={{ width: `${readProgress}%` }}
         />
       </div>
 
-      <article className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-        <nav className="flex flex-wrap items-center gap-2 text-sm text-gray-500 mb-6">
-          <Link to="/" className="hover:text-orange-500 duration-300">
+      <article className="container-pad max-w-6xl py-8 sm:py-12">
+        <nav className="flex flex-wrap items-center gap-2 text-sm text-[var(--ink-soft)] mb-6">
+          <Link to="/" className="hover:text-[var(--ember)] duration-300">
             Home
           </Link>
           <span>/</span>
-          <Link to="/blogs" className="hover:text-orange-500 duration-300">
+          <Link to="/blogs" className="hover:text-[var(--ember)] duration-300">
             Blogs
           </Link>
           <span>/</span>
-          <span className="text-[#4B6BFB]">{blog.category}</span>
+          <span className="text-[var(--teal)]">{blog.category}</span>
           <span>/</span>
           <span className="text-gray-700 truncate max-w-[200px] sm:max-w-xs">
             {blog.title}

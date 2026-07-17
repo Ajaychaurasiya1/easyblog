@@ -1,20 +1,31 @@
 import { useContext } from "react";
 import BlogCard from "./BlogCard";
 import { BlogContext } from "../context/BlogContext";
+
 const LatestBlogs = () => {
   const { blogData } = useContext(BlogContext);
+  const posts = [...blogData].slice(0, 6);
+
   return (
     <div>
-      <h1 className="text-3xl my-3 text-gray-700 font-bold text-center sm:text-start">
-        Latest Blogs
-      </h1>
-      <div className="grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 px-3 sm:px-4">
-        {blogData
-          .slice(-6)
-          .reverse()
-          .map((blog, index) => (
+      <div className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 className="section-title">Latest on the blog</h2>
+          <p className="section-lead mt-2">
+            Fresh essays and notes from the Velthrix community.
+          </p>
+        </div>
+      </div>
+
+      {posts.length === 0 ? (
+        <p className="rounded-2xl border border-dashed border-[var(--line)] bg-white/60 px-6 py-12 text-center text-[var(--ink-soft)]">
+          No posts yet. Be the first to publish from your dashboard.
+        </p>
+      ) : (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {posts.map((blog) => (
             <BlogCard
-              key={index}
+              key={blog._id}
               id={blog._id}
               title={blog.title}
               image={blog.image}
@@ -24,8 +35,10 @@ const LatestBlogs = () => {
               date={blog.createdAt}
             />
           ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
+
 export default LatestBlogs;

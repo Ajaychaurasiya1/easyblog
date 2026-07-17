@@ -1,58 +1,67 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { assets } from '../assets/assets'
+import { Link } from "react-router-dom";
+import { assets } from "../assets/assets";
 
 const Footer = () => {
   return (
-    <>
-    <div className=' flex flex-col py-12 md:flex-row items-center justify-between'>
+    <footer className="mt-auto border-t border-[var(--line)] bg-[var(--ink)] text-white">
+      <div className="container-pad grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="lg:col-span-2">
+          <div className="flex items-center gap-2">
+            <img src={assets.logo} alt="" className="h-8 brightness-0 invert" />
+            <p className="font-display text-2xl">
+              Velthrix <span className="font-semibold">Blog</span>
+            </p>
+          </div>
+          <p className="mt-4 max-w-md text-sm leading-relaxed text-white/65">
+            A home for thoughtful articles on technology, business, and modern
+            life. Read deeply, write clearly, and ship ideas that matter.
+          </p>
+          <p className="mt-4 text-sm text-white/55">
+            ajaychaurasiya@gmail.com
+          </p>
+        </div>
 
-      <div className=' w-full items-center flex flex-col justify-center px-2 sm:w-1/3 gap-2'>
-      <h1 className=' text-xl font-bold text-gray-700'>About</h1>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos, quo. Quisquam illo, quas, cupiditate repudiandae eum molestiae culpa deleniti consequuntur esse maxime ea iure, hic soluta cumque sed dignissimos accusantium.
-      </p>
-      <h4 className=' text-lg font-normal'>Email: ajaychaurasiya@gmail.com</h4>
-      <h4 className=' text-lg font-normal'>Phone: 3295749174</h4>
+        <div>
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-white/45">
+            Explore
+          </h3>
+          <ul className="mt-4 flex flex-col gap-2 text-sm text-white/75">
+            <Link className="hover:text-[var(--ember)] transition" to="/">
+              Home
+            </Link>
+            <Link className="hover:text-[var(--ember)] transition" to="/blogs">
+              All blogs
+            </Link>
+            <Link className="hover:text-[var(--ember)] transition" to="/about">
+              About
+            </Link>
+            <Link className="hover:text-[var(--ember)] transition" to="/contact">
+              Contact
+            </Link>
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-white/45">
+            Topics
+          </h3>
+          <ul className="mt-4 flex flex-col gap-2 text-sm text-white/75">
+            <li>Technology</li>
+            <li>Business</li>
+            <li>Lifestyle</li>
+            <li>Learning</li>
+          </ul>
+        </div>
       </div>
 
-      <div>
-        <h1 className=' text-xl font-bold text-gray-700 mb-5'>Categories</h1>
-        <ul className=' flex flex-col gap-2'>
-          <Link className=' cursor-pointer hover:text-black text-gray-700' to="/">Home</Link>
-          <Link className=' cursor-pointer hover:text-black text-gray-700' to="/blogs">Blogs</Link>
-          <Link className=' cursor-pointer hover:text-black text-gray-700' to="/about">About</Link>
-          <Link className=' cursor-pointer hover:text-black text-gray-700' to="/contact">Contact</Link>
-        </ul>
+      <div className="border-t border-white/10">
+        <div className="container-pad flex flex-col gap-2 py-5 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} Velthrix Blog. Built by Ajay Chaurasiya.</p>
+          <p>Privacy · Terms · Community guidelines</p>
+        </div>
       </div>
+    </footer>
+  );
+};
 
-      <div>
-        <h1 className=' text-xl font-bold text-gray-700 mb-5'>Quick Links</h1>
-        <ul className=' flex flex-col gap-2'>
-          <Link className=' cursor-pointer hover:text-black text-gray-700'>Weather</Link>
-          <Link className=' cursor-pointer hover:text-black text-gray-700'>Lifestyle</Link>
-          <Link className=' cursor-pointer hover:text-black text-gray-700'>Technology</Link>
-          <Link className=' cursor-pointer hover:text-black text-gray-700'>News</Link>
-        </ul>
-      </div>
-    </div>
-
-    <hr className=' h-0.5 text-gray-600 bg-gray-700 w-full' />
-    <div className=' flex flex-col sm:flex-row justify-between items-center my-6'>
-      <div className=' flex gap-2 items-center justify-center'>
-        <img src={assets.logo} alt="" />
-        <p>
-          Velthrix <span className='font-bold text-xl'>Blog</span>{" "}
-        </p>
-      </div>
-      <ul className=' flex flex-col sm:flex-row items-center gap-3'>
-        <li>Privacy Policy</li>
-        <li>Terms and Condition</li>
-        <li>copyright @ajaychaurasiya</li>
-      </ul>
-    </div>
-    </>
-  )
-}
-
-export default Footer
+export default Footer;

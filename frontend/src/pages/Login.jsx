@@ -43,47 +43,54 @@ const Login = () => {
   };
 
   return (
-    <div className=" w-full bg-pink-200 py-12 mx-auto flex items-center justify-center">
-      <div className=" w-full bg-white max-w-md p-5 mx-auto py-6 border border-gray-200 shadow-md ">
-        <h1 className=" text-lg font-bold text-center text-gray-700">
-          Login into your account!
+    <div className="container-pad flex justify-center py-14 sm:py-20">
+      <div className="w-full max-w-md rounded-3xl border border-[var(--line)] bg-white p-7 shadow-sm sm:p-9">
+        <p className="text-sm font-medium uppercase tracking-[0.18em] text-[var(--ember)]">
+          Welcome back
+        </p>
+        <h1 className="mt-2 font-display text-3xl text-[var(--ink)]">
+          Sign in to Velthrix Blog
         </h1>
-        <form
-          onSubmit={submitHandler}
-          action=""
-          className=" flex flex-col gap-5 mt-5 w-full"
-        >
-          <input
-            name="email"
-            value={formData.email}
-            onChange={onChangeHandler}
-            type="email"
-            placeholder="Enter your email"
-            required
-            className=" w-full p-2 border border-gray-300 rounded outline-none"
-          />
-          <input
-            name="password"
-            value={formData.password}
-            onChange={onChangeHandler}
-            type="password"
-            placeholder="Enter your password"
-            required
-            className=" w-full p-2 border border-gray-300 rounded outline-none"
-          />
-
+        <p className="mt-2 text-sm text-[var(--ink-soft)]">
+          Access your dashboard, publish posts, and manage your profile.
+        </p>
+        <form onSubmit={submitHandler} className="mt-7 flex flex-col gap-4">
+          <label className="text-sm">
+            <span className="mb-1.5 block font-medium">Email</span>
+            <input
+              name="email"
+              value={formData.email}
+              onChange={onChangeHandler}
+              type="email"
+              placeholder="you@example.com"
+              required
+              className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2.5 outline-none focus:border-[var(--ember)]"
+            />
+          </label>
+          <label className="text-sm">
+            <span className="mb-1.5 block font-medium">Password</span>
+            <input
+              name="password"
+              value={formData.password}
+              onChange={onChangeHandler}
+              type="password"
+              placeholder="Your password"
+              required
+              className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2.5 outline-none focus:border-[var(--ember)]"
+            />
+          </label>
           <button
             disabled={loading}
-            className=" bg-orange-600 text-white px-6 py-2 w-full cursor-pointer disabled:opacity-60"
+            className="btn-primary mt-2 w-full cursor-pointer disabled:opacity-60"
           >
-            {loading ? "Signing in..." : "Signin"}
+            {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
-        <p className=" text-center mt-4">
-          Don't have an account?{" "}
-          <Link to={"/register"} className=" text-orange-600 cursor-pointer">
-            Register Here
-          </Link>{" "}
+        <p className="mt-6 text-center text-sm text-[var(--ink-soft)]">
+          Don&apos;t have an account?{" "}
+          <Link to="/register" className="font-medium text-[var(--ember)]">
+            Register here
+          </Link>
         </p>
       </div>
     </div>

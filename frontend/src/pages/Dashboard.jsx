@@ -91,120 +91,149 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex h-auto">
-      <div className="w-64 border border-gray-300  text-white p-6">
-        <h2 className="text-lg font-semibold mb-6 text-white">Dashboard</h2>
-        <button
-          className={`w-full text-left py-2 px-4 mb-2 rounded ${
-            activeTab === "post" ? "bg-orange-500" : "bg-gray-700"
-          }`}
-          onClick={() => setActiveTab("post")}
-        >
-          Post a Blog
-        </button>
-        <button
-          className={`w-full text-left py-2 px-4 rounded ${
-            activeTab === "list" ? "bg-orange-500" : "bg-gray-700"
-          }`}
-          onClick={() => setActiveTab("list")}
-        >
-          List of Blogs
-        </button>
+    <div className="container-pad py-10 sm:py-12">
+      <div className="mb-8">
+        <h1 className="font-display text-3xl sm:text-4xl">Writer dashboard</h1>
+        <p className="mt-2 text-[var(--ink-soft)]">
+          Draft new posts or manage everything you have published.
+        </p>
       </div>
 
-      <div className="flex-1 p-6">
-        {activeTab === "post" ? (
-          <div>
-            <h2 className="text-xl font-bold">Post a new blog</h2>
-            <div className="mt-8">
+      <div className="flex flex-col gap-6 lg:flex-row">
+        <aside className="w-full shrink-0 rounded-2xl bg-[var(--ink)] p-5 text-white lg:w-56">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-white/45">
+            Menu
+          </p>
+          <button
+            type="button"
+            className={`mb-2 w-full cursor-pointer rounded-xl px-4 py-2.5 text-left text-sm transition ${
+              activeTab === "post" ? "bg-[var(--ember)]" : "bg-white/10 hover:bg-white/15"
+            }`}
+            onClick={() => setActiveTab("post")}
+          >
+            Post a blog
+          </button>
+          <button
+            type="button"
+            className={`w-full cursor-pointer rounded-xl px-4 py-2.5 text-left text-sm transition ${
+              activeTab === "list" ? "bg-[var(--ember)]" : "bg-white/10 hover:bg-white/15"
+            }`}
+            onClick={() => setActiveTab("list")}
+          >
+            Your posts
+          </button>
+        </aside>
+
+        <div className="min-w-0 flex-1 rounded-2xl border border-[var(--line)] bg-white p-6 shadow-sm">
+          {activeTab === "post" ? (
+            <div>
+              <h2 className="font-display text-2xl">Publish a new article</h2>
               <form
                 onSubmit={submitHandler}
-                className="w-1/2 flex flex-col gap-3"
+                className="mt-6 flex max-w-xl flex-col gap-4"
               >
                 <input
                   name="title"
                   value={formData.title}
                   onChange={onChangeHandler}
                   type="text"
-                  placeholder="title"
+                  placeholder="Title"
                   required
-                  className="border border-gray-300 rounded-md p-2 outline-none w-full"
+                  className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2.5 outline-none focus:border-[var(--ember)]"
                 />
                 <input
                   name="category"
                   value={formData.category}
                   onChange={onChangeHandler}
                   type="text"
-                  placeholder="category"
+                  placeholder="Category (e.g. Technology)"
                   required
-                  className="border border-gray-300 rounded-md p-2 outline-none w-full"
+                  className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2.5 outline-none focus:border-[var(--ember)]"
                 />
                 <textarea
                   name="description"
                   value={formData.description}
                   onChange={onChangeHandler}
-                  placeholder="description"
+                  placeholder="Write your article..."
                   required
-                  className="border border-gray-300 rounded-md p-2 outline-none w-full"
+                  rows={6}
+                  className="w-full rounded-xl border border-[var(--line)] bg-[var(--paper)] px-3 py-2.5 outline-none focus:border-[var(--ember)]"
                 />
-
-                <div>
-                  <label htmlFor="">Choose Image</label>
+                <label className="text-sm">
+                  <span className="mb-1.5 block font-medium">Cover image</span>
                   <input
                     onChange={fileHandler}
                     type="file"
                     accept="image/*"
                     required
-                    className="border border-gray-300 rounded-md p-2 outline-none w-full"
+                    className="w-full rounded-xl border border-[var(--line)] px-3 py-2 text-sm"
                   />
-                </div>
+                </label>
                 <button
                   disabled={loading}
-                  className="bg-black text-white w-full rounded-full border-none cursor-pointer py-2 disabled:opacity-60"
+                  className="btn-primary mt-2 w-full cursor-pointer disabled:opacity-60 sm:w-auto"
                 >
-                  {loading ? "Posting..." : "post blog"}
+                  {loading ? "Publishing..." : "Publish blog"}
                 </button>
               </form>
             </div>
-          </div>
-        ) : (
-          <div className="p-4 h-auto">
-            <h2 className="text-xl font-semibold mb-4">List of Blogs</h2>
-            <div className="overflow-x-auto">
-              <table className="min-w-full border border-gray-300">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th className="border px-4 py-2">Title</th>
-                    <th className="border px-4 py-2">Category</th>
-                    <th className="border px-4 py-2">Image</th>
-                    <th className="border px-4 py-2">Remove</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {blogs.map((blog) => (
-                    <tr key={blog._id} className="text-center">
-                      <td className="border px-4 py-2">{blog.title}</td>
-                      <td className="border px-4 py-2">{blog.category}</td>
-                      <td className="border px-4 py-2">
-                        <img
-                          src={getImageUrl(blog.image)}
-                          alt={blog.title}
-                          className="w-16 h-16 object-cover mx-auto"
-                        />
-                      </td>
-                      <td
-                        className="border px-4 py-2 cursor-pointer"
-                        onClick={() => removeBlog(blog._id)}
-                      >
-                        X
-                      </td>
+          ) : (
+            <div>
+              <h2 className="font-display text-2xl">Published posts</h2>
+              <div className="mt-6 overflow-x-auto">
+                <table className="min-w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-[var(--line)] text-left text-[var(--ink-soft)]">
+                      <th className="px-3 py-3 font-medium">Title</th>
+                      <th className="px-3 py-3 font-medium">Category</th>
+                      <th className="px-3 py-3 font-medium">Image</th>
+                      <th className="px-3 py-3 font-medium">Remove</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {blogs.map((blog) => (
+                      <tr
+                        key={blog._id}
+                        className="border-b border-[var(--line)] last:border-0"
+                      >
+                        <td className="px-3 py-3 font-medium">{blog.title}</td>
+                        <td className="px-3 py-3 text-[var(--ink-soft)]">
+                          {blog.category}
+                        </td>
+                        <td className="px-3 py-3">
+                          <img
+                            src={getImageUrl(blog.image)}
+                            alt={blog.title}
+                            className="h-12 w-16 rounded-lg object-cover"
+                          />
+                        </td>
+                        <td className="px-3 py-3">
+                          <button
+                            type="button"
+                            className="cursor-pointer text-[var(--ember)] hover:underline"
+                            onClick={() => removeBlog(blog._id)}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {blogs.length === 0 && (
+                      <tr>
+                        <td
+                          colSpan={4}
+                          className="px-3 py-10 text-center text-[var(--ink-soft)]"
+                        >
+                          No posts yet. Switch to “Post a blog” to publish your first article.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
