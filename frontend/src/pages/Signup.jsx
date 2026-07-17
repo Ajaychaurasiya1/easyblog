@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { registerUser } from "../api/auth";
+import { getErrorMessage } from "../api/errors";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -33,23 +34,21 @@ const Signup = () => {
     try {
       setLoading(true);
       const data = new FormData();
-      data.append("name", formData.name);
-      data.append("email", formData.email);
+      data.append("name", formData.name.trim());
+      data.append("email", formData.email.trim());
       data.append("password", formData.password);
       data.append("image", formData.image);
 
       const res = await registerUser(data);
 
       if (res.data.success) {
-        toast.success(res.data.message);
+        toast.success(res.data.message || "Account created");
         navigate("/login");
+      } else {
+        toast.error(res.data.message || "Signup failed");
       }
     } catch (error) {
-      const message =
-        error.response?.data?.message ||
-        error.message ||
-        "Signup failed. Please try again.";
-      toast.error(message);
+      toast.error(getErrorMessage(error, "Signup failed. Please try again."));
     } finally {
       setLoading(false);
     }

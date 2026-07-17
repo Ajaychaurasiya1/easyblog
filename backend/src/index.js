@@ -22,7 +22,14 @@ if (!fs.existsSync(uploadsDir)) {
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use(
+  cors({
+    origin: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 app.use("/uploads", express.static(uploadsDir));
 app.use("/images", express.static(uploadsDir));

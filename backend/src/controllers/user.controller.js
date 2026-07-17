@@ -36,9 +36,16 @@ export const register = async (req, res) => {
       password: hashedPassword,
       image: image_filename,
     });
-    res
-      .status(201)
-      .json({ message: "User created successfully", success: true, user });
+    res.status(201).json({
+      message: "User created successfully",
+      success: true,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        image: user.image,
+      },
+    });
   } catch (error) {
     console.error("Register error:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -48,7 +55,23 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email and password are required",
+        success: false,
+      });
+    }
+
+    if (!process.env.JWT_SECRET) {
+      console.error("JWT_SECRET is not set");
+      return res.status(500).json({
+        message: "Server auth is not configured",
+        success: false,
+      });
+    }
+
+    const user = await User.findOne({ email: email.trim() });
     if (!user) {
       return res
         .status(400)
@@ -63,10 +86,22 @@ export const login = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
-    res
-      .status(200)
-      .json({ message: "Login successful", success: true, token, user });
+
+    const safeUser = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      image: user.image,
+    };
+
+    res.status(200).json({
+      message: "Login successful",
+      success: true,
+      token,
+      user: safeUser,
+    });
   } catch (error) {
+    console.error("Login error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };

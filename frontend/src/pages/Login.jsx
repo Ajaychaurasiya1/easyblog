@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AuthContext } from "../context/AuthContext";
 import { loginUser as loginApi } from "../api/auth";
+import { getErrorMessage } from "../api/errors";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -10,7 +11,7 @@ const Login = () => {
     password: "",
   });
 
-  const { loginUser } = useContext(AuthContext);
+  const auth = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
@@ -22,19 +23,20 @@ const Login = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await loginApi(formData);
+      const res = await loginApi({
+        email: formData.email.trim(),
+        password: formData.password,
+      });
       if (res.data.success) {
         const { user, token } = res.data;
-        loginUser(user, token);
-        toast.success(res.data.message);
+        auth?.loginUser(user, token);
+        toast.success(res.data.message || "Login successful");
         navigate("/");
+      } else {
+        toast.error(res.data.message || "Login failed");
       }
     } catch (error) {
-      const message =
-        error.response?.data?.message ||
-        error.message ||
-        "Login failed. Please try again.";
-      toast.error(message);
+      toast.error(getErrorMessage(error, "Login failed. Please try again."));
     } finally {
       setLoading(false);
     }
