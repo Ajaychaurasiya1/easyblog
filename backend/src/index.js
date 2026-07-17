@@ -12,6 +12,7 @@ import blogRoutes from "./routes/blog.routes.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Load local .env when present; Render injects env vars directly
 dotenv.config({ path: path.join(__dirname, "../.env") });
 
 const uploadsDir = path.join(__dirname, "../uploads");
@@ -38,12 +39,25 @@ app.get("/", (req, res) => {
   res.send("hello world");
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).json({ ok: true });
+});
+
 app.use("/user", userRoutes);
 app.use("/blog", blogRoutes);
 
 const PORT = process.env.PORT || 4000;
 
-app.listen(PORT, () => {
-  connectDB();
-  console.log(`Server is Running on port ${PORT}`);
-});
+const start = async () => {
+  try {
+    await connectDB();
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server is Running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
+
+start();
